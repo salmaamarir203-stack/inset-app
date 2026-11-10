@@ -1,0 +1,72 @@
+<div class="container mt-3">
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-header bg-success text-white">Ajouter un produit</div>
+    <div class="card-body">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <input class="form-control" placeholder="Nom" [(ngModel)]="newProduct.name">
+        </div>
+        <div class="col-md-3">
+          <input type="number" class="form-control" placeholder="Prix" [(ngModel)]="newProduct.price">
+        </div>
+        <div class="col-md-3">
+          <input type="number" class="form-control" placeholder="Quantité" [(ngModel)]="newProduct.quantity">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-success w-100" (click)="handleAdd()">
+            <i class="bi bi-plus-circle"></i> Ajouter
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Liste des Produits</h3>
+    </div>
+    <div class="card-body">
+      <input class="form-control mb-3" placeholder="Rechercher un produit..."
+             [ngModel]="keyword()" (ngModelChange)="keyword.set($event)">
+
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th><th>Nom</th><th>Prix</th><th>Quantité</th><th>Statut</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of filteredProducts(); track p.id) {
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.name }}</td>
+              <td>{{ p.price | currency:'EUR' }}</td>
+              <td>{{ p.quantity }}</td>
+              <td>
+                <span role="button" (click)="toggleSelected(p)">
+                  @if (p.selected) {
+                    <span class="badge bg-success-subtle text-success border border-success">
+                      <i class="bi bi-check-circle-fill"></i> Sélectionné
+                    </span>
+                  } @else {
+                    <span class="badge bg-secondary-subtle text-secondary border">
+                      <i class="bi bi-circle"></i> Non sélectionné
+                    </span>
+                  }
+                </span>
+              </td>
+              <td>
+                <button (click)="handleDelete(p)" class="btn btn-outline-danger btn-sm">
+                  <i class="bi bi-trash"></i> Supprimer
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="text-center text-muted">Aucun produit</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
