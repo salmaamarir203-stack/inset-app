@@ -1,0 +1,86 @@
+<div class="container mt-3">
+  <h2 class="mb-3"><i class="bi bi-receipt me-2"></i>Factures</h2>
+
+  @if (error()) {
+    <div class="alert alert-danger">{{ error() }} <button class="btn btn-sm btn-outline-danger ms-2" (click)="loadInvoices()">Réessayer</button></div>
+  }
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-header bg-success text-white">Créer une facture</div>
+    <div class="card-body">
+      @if (customersLoading() || productsLoading()) {
+        <div class="text-center py-2"><div class="spinner-border spinner-border-sm text-primary"></div> Chargement des données...</div>
+      } @else {
+        <div class="row g-2 mb-3">
+          <div class="col-md-5">
+            <label class="form-label">Client</label>
+            <select class="form-select" [(ngModel)]="customerId">
+              <option [ngValue]="null">Sélectionner un client</option>
+              @for (customer of customers(); track customer.id) {
+                <option [ngValue]="customer.id">{{ customer.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        @for (line of lines; track $index) {
+          <div class="row g-2 mb-2 align-items-end">
+            <div class="col-md-7">
+              <label class="form-label">Produit</label>
+              <select class="form-select" [(ngModel)]="line.productId" [name]="'product-' + $index">
+                <option [ngValue]="null">Sélectionner un produit</option>
+                @for (product of products(); track product.id) {
+                  <option [ngValue]="product.id">{{ product.name }} - {{ product.price | currency:'EUR' }} (stock: {{ product.quantity }})</option>
+                }
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Quantité</label>
+              <input type="number" min="1" class="form-control" [(ngModel)]="line.quantity" [name]="'quantity-' + $index">
+            </div>
+            <div class="col-md-2">
+              <button class="btn btn-outline-danger w-100" [disabled]="lines.length === 1" (click)="removeLine($index)">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        }
+
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn btn-outline-primary" (click)="addLine()"><i class="bi bi-plus-circle"></i> Ajouter une ligne</button>
+          <button class="btn btn-success" [disabled]="!canCreate() || creating()" (click)="create()">
+            {{ creating() ? 'Création...' : 'Créer la facture' }}
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">Liste des factures</div>
+    <div class="card-body">
+      @if (loading()) {
+        <div class="text-center py-4"><div class="spinner-border text-primary" aria-label="Chargement"></div></div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light"><tr><th>ID</th><th>Date</th><th>Client</th><th>Total</th><th></th></tr></thead>
+            <tbody>
+              @for (invoice of invoices(); track invoice.id) {
+                <tr>
+                  <td>#{{ invoice.id }}</td>
+                  <td>{{ invoiceDate(invoice) | date:'mediumDate' }}</td>
+                  <td>{{ invoice.customer?.name || ('Client #' + (invoice.customerId || '-')) }}</td>
+                  <td>{{ invoiceTotal(invoice) | currency:'EUR' }}</td>
+                  <td><a class="btn btn-outline-primary btn-sm" [routerLink]="['/invoices', invoice.id]">Détails</a></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="5" class="text-center text-muted py-4">Aucune facture enregistrée</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

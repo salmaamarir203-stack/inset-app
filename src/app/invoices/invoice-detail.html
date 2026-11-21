@@ -1,0 +1,45 @@
+<div class="container mt-3">
+  <a routerLink="/invoices" class="btn btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Retour aux factures</a>
+
+  @if (loading()) {
+    <div class="text-center py-5"><div class="spinner-border text-primary" aria-label="Chargement"></div></div>
+  } @else if (error()) {
+    <div class="alert alert-danger">{{ error() }}</div>
+  } @else if (invoice(); as invoice) {
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white d-flex justify-content-between">
+        <h4 class="mb-0">Facture #{{ invoice.id }}</h4>
+        <span>{{ date(invoice) | date:'mediumDate' }}</span>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <h6 class="text-muted">Client</h6>
+          <strong>{{ invoice.customer?.name || ('Client #' + (invoice.customerId || '-')) }}</strong>
+          @if (invoice.customer?.email) { <div>{{ invoice.customer?.email }}</div> }
+        </div>
+
+        <div class="table-responsive">
+          <table class="table align-middle">
+            <thead class="table-light"><tr><th>Produit</th><th>Quantité</th><th>Prix unitaire</th><th>Sous-total</th></tr></thead>
+            <tbody>
+              @for (line of lines(); track $index) {
+                <tr>
+                  <td>{{ line.product?.name || ('Produit #' + (line.productId || '-')) }}</td>
+                  <td>{{ line.quantity }}</td>
+                  <td>{{ (line.price ?? line.unitPrice ?? line.product?.price ?? 0) | currency:'EUR' }}</td>
+                  <td>{{ (line.amount ?? line.total ?? ((line.price ?? line.unitPrice ?? line.product?.price ?? 0) * line.quantity)) | currency:'EUR' }}</td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="text-center text-muted">Aucune ligne dans cette facture</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-end">
+          <h4 class="mb-0">Total: {{ total() | currency:'EUR' }}</h4>
+        </div>
+      </div>
+    </div>
+  }
+</div>

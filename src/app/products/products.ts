@@ -13,6 +13,8 @@ import { Product } from '../model/product.model';
 export class Products implements OnInit {
   products = signal<Product[]>([]);
   keyword = signal('');
+  loading = signal(true);
+  error = signal('');
   newProduct: Product = { name: '', price: 0, quantity: 1, selected: false };
 
   filteredProducts = computed(() => {
@@ -27,9 +29,18 @@ export class Products implements OnInit {
   }
 
   getProducts() {
+    this.loading.set(true);
+    this.error.set('');
     this.productService.getAllProducts().subscribe({
-      next: (data) => this.products.set(data),
-      error: (err) => console.error('Erreur de chargement :', err)
+      next: (data) => {
+        this.products.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Impossible de charger les produits.');
+        this.loading.set(false);
+        console.error('Erreur de chargement :', err);
+      }
     });
   }
 

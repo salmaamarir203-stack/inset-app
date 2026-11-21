@@ -1,13 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../model/product.model';
+import { API_BASE_URL } from '../core/api.config';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private host = 'http://localhost:8083';
-
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, @Inject(API_BASE_URL) private host: string) {}
 
   getAllProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(`${this.host}/products`);
@@ -18,10 +17,12 @@ export class ProductService {
   }
 
   saveProduct(p: Product): Observable<Product> {
-    return this.http.post<Product>(`${this.host}/products`, p);
+    const { selected, ...payload } = p;
+    return this.http.post<Product>(`${this.host}/products`, payload);
   }
 
   updateProduct(p: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.host}/products/${p.id}`, p);
+    const { selected, ...payload } = p;
+    return this.http.put<Product>(`${this.host}/products/${p.id}`, payload);
   }
 }

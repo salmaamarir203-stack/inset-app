@@ -30,6 +30,11 @@
       <input class="form-control mb-3" placeholder="Rechercher un produit..."
              [ngModel]="keyword()" (ngModelChange)="keyword.set($event)">
 
+      @if (loading()) {
+        <div class="text-center py-4"><div class="spinner-border text-primary" aria-label="Chargement"></div></div>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }} <button class="btn btn-sm btn-outline-danger ms-2" (click)="getProducts()">Réessayer</button></div>
+      } @else {
       <table class="table table-hover align-middle">
         <thead class="table-light">
           <tr>
@@ -67,6 +72,7 @@
           }
         </tbody>
       </table>
+      }
     </div>
   </div>
 </div>
