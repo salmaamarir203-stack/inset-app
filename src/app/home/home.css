@@ -1,0 +1,99 @@
+.home-page {
+  max-width: 1120px;
+  padding-top: clamp(3rem, 8vw, 7rem);
+}
+
+.eyebrow {
+  color: #6476db;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.home-page h1 {
+  max-width: 12ch;
+  color: #18233b;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.home-page h1 span {
+  color: #5967ce;
+}
+
+.home-page .lead {
+  max-width: 36rem;
+  font-size: 1.1rem;
+  line-height: 1.75;
+}
+
+.home-page .btn-primary {
+  --bs-btn-bg: #5967ce;
+  --bs-btn-border-color: #5967ce;
+  --bs-btn-hover-bg: #4755bb;
+  --bs-btn-hover-border-color: #4755bb;
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.welcome-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid #e8ebf3;
+  border-radius: 1.4rem;
+  background:
+    radial-gradient(ellipse at top right, rgb(104 119 224 / 12%), transparent 58%),
+    #fff;
+  box-shadow: 0 1rem 3.5rem rgb(35 48 84 / 9%);
+}
+
+.welcome-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.welcome-icon {
+  display: inline-flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: #5967ce;
+  color: #fff;
+  font-size: 1.4rem;
+}
+
+.status-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: #35bd8a;
+  box-shadow: 0 0 0 0.3rem rgb(53 189 138 / 14%);
+}
+
+.welcome-card h2 {
+  color: #202b43;
+}
+
+.welcome-divider {
+  height: 1px;
+  margin: 1.5rem 0;
+  background: #e9ecf3;
+}
+
+.feature-icon {
+  display: inline-flex;
+  width: 2.7rem;
+  height: 2.7rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  background: #eef0ff;
+  color: #5967ce;
+  font-size: 1.05rem;
+}

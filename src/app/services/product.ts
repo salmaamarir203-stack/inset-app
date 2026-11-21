@@ -5,23 +5,23 @@ import { Product } from '../model/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-  private host = 'http://localhost:8083';
+  private readonly apiUrl = 'http://localhost:8080/products';
 
   constructor(private http: HttpClient) {}
 
   getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.host}/products`);
+    return this.http.get<Product[]>(this.apiUrl);
   }
 
-  deleteProduct(p: Product): Observable<void> {
-    return this.http.delete<void>(`${this.host}/products/${p.id}`);
+  deleteProduct(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   saveProduct(p: Product): Observable<Product> {
-    return this.http.post<Product>(`${this.host}/products`, p);
+    return this.http.post<Product>(this.apiUrl, p);
   }
 
   updateProduct(p: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.host}/products/${p.id}`, p);
+    return this.http.put<Product>(`${this.apiUrl}/${p.id}`, p);
   }
 }

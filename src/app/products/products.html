@@ -1,72 +1,198 @@
-<div class="container mt-3">
+<section class="products-page container py-4 py-lg-5">
+  <header class="page-heading d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <p class="eyebrow mb-2">CATALOGUE</p>
+      <h1 class="display-6 fw-bold mb-2">Gestion des produits</h1>
+      <p class="text-secondary mb-0">Consultez et gérez les produits de votre catalogue.</p>
+    </div>
+    <div class="product-count align-self-md-center">
+      <span class="count-value">{{ products().length }}</span>
+      <span class="count-label">produit{{ products().length === 1 ? '' : 's' }}</span>
+    </div>
+  </header>
 
-  <div class="card shadow-sm mb-3">
-    <div class="card-header bg-success text-white">Ajouter un produit</div>
-    <div class="card-body">
-      <div class="row g-2">
-        <div class="col-md-4">
-          <input class="form-control" placeholder="Nom" [(ngModel)]="newProduct.name">
-        </div>
-        <div class="col-md-3">
-          <input type="number" class="form-control" placeholder="Prix" [(ngModel)]="newProduct.price">
-        </div>
-        <div class="col-md-3">
-          <input type="number" class="form-control" placeholder="Quantité" [(ngModel)]="newProduct.quantity">
-        </div>
-        <div class="col-md-2">
-          <button class="btn btn-success w-100" (click)="handleAdd()">
-            <i class="bi bi-plus-circle"></i> Ajouter
-          </button>
+  @if (errorMessage()) {
+    <div class="alert alert-danger d-flex align-items-start gap-2" role="alert">
+      <i class="bi bi-exclamation-circle-fill mt-1" aria-hidden="true"></i>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+  @if (successMessage()) {
+    <div class="alert alert-success d-flex align-items-start gap-2" role="status">
+      <i class="bi bi-check-circle-fill mt-1" aria-hidden="true"></i>
+      <span>{{ successMessage() }}</span>
+    </div>
+  }
+
+  <section class="card surface-card mb-4" aria-labelledby="product-form-title">
+    <div class="card-body p-4">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <span class="section-icon" aria-hidden="true">
+          <i class="bi" [class.bi-pencil-square]="editingId() !== null" [class.bi-plus-lg]="editingId() === null"></i>
+        </span>
+        <div>
+          <h2 class="h5 fw-bold mb-1" id="product-form-title">
+            {{ editingId() === null ? 'Ajouter un produit' : 'Modifier le produit' }}
+          </h2>
+          <p class="text-secondary small mb-0">Renseignez le nom, le prix et la quantité.</p>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="card shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h3 class="mb-0">Liste des Produits</h3>
+      <form #productNgForm="ngForm" (ngSubmit)="saveProduct()">
+        <div class="row g-3 align-items-end">
+          <div class="col-12 col-md-5">
+            <label for="product-name" class="form-label">Nom du produit</label>
+            <input
+              id="product-name"
+              name="name"
+              class="form-control"
+              [(ngModel)]="productForm.name"
+              placeholder="Ex. Clavier sans fil"
+              required
+              maxlength="120"
+            >
+          </div>
+          <div class="col-6 col-md-3">
+            <label for="product-price" class="form-label">Prix (€)</label>
+            <input
+              id="product-price"
+              name="price"
+              type="number"
+              class="form-control"
+              [(ngModel)]="productForm.price"
+              min="0"
+              step="0.01"
+              required
+            >
+          </div>
+          <div class="col-6 col-md-2">
+            <label for="product-quantity" class="form-label">Quantité</label>
+            <input
+              id="product-quantity"
+              name="quantity"
+              type="number"
+              class="form-control"
+              [(ngModel)]="productForm.quantity"
+              min="0"
+              step="1"
+              required
+            >
+          </div>
+          <div class="col-12 col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1" [disabled]="productNgForm.invalid || saving()">
+              @if (saving()) {
+                <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+                Enregistrement
+              } @else {
+                <i class="bi" [class.bi-check2]="editingId() !== null" [class.bi-plus-lg]="editingId() === null" aria-hidden="true"></i>
+                {{ editingId() === null ? 'Ajouter' : 'Enregistrer' }}
+              }
+            </button>
+            @if (editingId() !== null) {
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelEdit()" aria-label="Annuler la modification">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
+              </button>
+            }
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="card-body">
-      <input class="form-control mb-3" placeholder="Rechercher un produit..."
-             [ngModel]="keyword()" (ngModelChange)="keyword.set($event)">
+  </section>
 
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>ID</th><th>Nom</th><th>Prix</th><th>Quantité</th><th>Statut</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (p of filteredProducts(); track p.id) {
-            <tr>
-              <td>{{ p.id }}</td>
-              <td>{{ p.name }}</td>
-              <td>{{ p.price | currency:'EUR' }}</td>
-              <td>{{ p.quantity }}</td>
-              <td>
-                <span role="button" (click)="toggleSelected(p)">
-                  @if (p.selected) {
-                    <span class="badge bg-success-subtle text-success border border-success">
-                      <i class="bi bi-check-circle-fill"></i> Sélectionné
-                    </span>
-                  } @else {
-                    <span class="badge bg-secondary-subtle text-secondary border">
-                      <i class="bi bi-circle"></i> Non sélectionné
-                    </span>
-                  }
-                </span>
-              </td>
-              <td>
-                <button (click)="handleDelete(p)" class="btn btn-outline-danger btn-sm">
-                  <i class="bi bi-trash"></i> Supprimer
-                </button>
-              </td>
-            </tr>
-          } @empty {
-            <tr><td colspan="6" class="text-center text-muted">Aucun produit</td></tr>
-          }
-        </tbody>
-      </table>
+  <section class="card surface-card" aria-labelledby="product-list-title">
+    <div class="card-body p-0">
+      <div class="list-toolbar d-flex flex-column flex-sm-row justify-content-between gap-3 p-4">
+        <div>
+          <h2 class="h5 fw-bold mb-1" id="product-list-title">Tous les produits</h2>
+          <p class="small text-secondary mb-0">Votre catalogue en un coup d’œil.</p>
+        </div>
+        <div class="search-box">
+          <i class="bi bi-search" aria-hidden="true"></i>
+          <input
+            type="search"
+            class="form-control"
+            placeholder="Rechercher un produit"
+            aria-label="Rechercher un produit"
+            [ngModel]="keyword()"
+            (ngModelChange)="keyword.set($event)"
+          >
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="state-panel" role="status">
+          <span class="spinner-border text-primary" aria-hidden="true"></span>
+          <p class="text-secondary mb-0 mt-3">Chargement des produits…</p>
+        </div>
+      } @else if (products().length === 0) {
+        <div class="state-panel">
+          <span class="empty-icon"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+          <h3 class="h6 fw-bold mt-3">Votre catalogue est vide</h3>
+          <p class="text-secondary mb-0">Ajoutez votre premier produit avec le formulaire ci-dessus.</p>
+        </div>
+      } @else if (filteredProducts().length === 0) {
+        <div class="state-panel">
+          <span class="empty-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+          <h3 class="h6 fw-bold mt-3">Aucun résultat</h3>
+          <p class="text-secondary mb-0">Essayez une autre recherche.</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table product-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Produit</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Quantité</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (product of filteredProducts(); track product.id) {
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <span class="product-icon"><i class="bi bi-box" aria-hidden="true"></i></span>
+                      <div>
+                        <span class="product-name">{{ product.name }}</span>
+                        <span class="product-id">ID {{ product.id }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="fw-semibold">{{ product.price | currency:'EUR':'symbol':'1.2-2':'fr-FR' }}</td>
+                  <td><span class="quantity-pill">{{ product.quantity }}</span></td>
+                  <td>
+                    <div class="d-flex justify-content-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        (click)="startEdit(product)"
+                        [disabled]="deletingId() === product.id"
+                        [attr.aria-label]="'Modifier ' + product.name"
+                      >
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="deleteProduct(product)"
+                        [disabled]="deletingId() !== null"
+                        [attr.aria-label]="'Supprimer ' + product.name"
+                      >
+                        @if (deletingId() === product.id) {
+                          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                        } @else {
+                          <i class="bi bi-trash3" aria-hidden="true"></i>
+                        }
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
-  </div>
-</div>
+  </section>
+</section>

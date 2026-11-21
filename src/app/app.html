@@ -1,16 +1,21 @@
-<div class="p-3">
-  <nav class="navbar navbar-expand navbar-light bg-light p-2 mb-3 rounded shadow-sm">
-    <div class="container-fluid">
-      <a class="navbar-brand text-primary fw-bold" href="#">Angular App</a>
-      <div class="navbar-nav">
-        <button class="btn btn-outline-primary me-2" routerLink="/home">
-          <i class="bi bi-house-door"></i> Home
-        </button>
-        <button class="btn btn-outline-primary" routerLink="/products">
-          <i class="bi bi-box-seam"></i> Products
-        </button>
+<header class="app-header">
+  <nav class="navbar navbar-expand">
+    <div class="container app-nav">
+      <a class="navbar-brand d-flex align-items-center gap-2" routerLink="/home">
+        <span class="brand-mark"><i class="bi bi-layers-half" aria-hidden="true"></i></span>
+        <span>Inset<span class="brand-accent">Stock</span></span>
+      </a>
+      <div class="navbar-nav flex-row gap-2">
+        <a class="nav-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bi bi-house-door me-1" aria-hidden="true"></i>Accueil
+        </a>
+        <a class="nav-link" routerLink="/products" routerLinkActive="active">
+          <i class="bi bi-box-seam me-1" aria-hidden="true"></i>Produits
+        </a>
       </div>
     </div>
   </nav>
+</header>
+<main>
   <router-outlet></router-outlet>
-</div>
+</main>

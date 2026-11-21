@@ -1,0 +1,67 @@
+.app-header {
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid #e8ebf3;
+  background: rgb(255 255 255 / 94%);
+}
+
+.app-nav {
+  min-height: 4.5rem;
+}
+
+.navbar-brand {
+  color: #202b43;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.navbar-brand:hover {
+  color: #202b43;
+}
+
+.brand-mark {
+  display: inline-flex;
+  width: 2.2rem;
+  height: 2.2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.7rem;
+  background: #5967ce;
+  color: white;
+  font-size: 1rem;
+}
+
+.brand-accent {
+  color: #5967ce;
+}
+
+.app-header .nav-link {
+  padding: 0.55rem 0.85rem;
+  border-radius: 0.65rem;
+  color: #68728a;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.app-header .nav-link:hover,
+.app-header .nav-link.active {
+  background: #f0f2ff;
+  color: #4f5dc5;
+}
+
+@media (max-width: 575.98px) {
+  .app-nav {
+    min-height: 4rem;
+  }
+
+  .navbar-brand {
+    gap: 0.4rem !important;
+    font-size: 1rem;
+  }
+
+  .app-header .nav-link {
+    padding: 0.5rem;
+    font-size: 0.82rem;
+  }
+}
